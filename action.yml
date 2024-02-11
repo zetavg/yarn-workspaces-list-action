@@ -1,4 +1,4 @@
-name: 'Yarn Workspace Packages Listing'
+name: 'Yarn Workspace Packages List'
 description: 'List all packages which matches a certain condition in a Yarn Workspace.'
 branding:
   icon: 'package'
