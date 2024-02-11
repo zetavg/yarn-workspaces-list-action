@@ -48,6 +48,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       # Yarn is required for the yarn-workspace-packages-list action to work.
       # To do this, we'll install Node.js and enable Corepack for picking up the correct yarn version here. This may vary depending on your project.
