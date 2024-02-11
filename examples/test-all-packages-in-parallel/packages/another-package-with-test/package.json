@@ -1,0 +1,7 @@
+{
+  "name": "another-package-with-test",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Test script has been run.\""
+  }
+}

@@ -1,0 +1,72 @@
+name: 'Yarn Workspace Packages Listing'
+description: 'List all packages which matches a certain condition in a Yarn Workspace.'
+inputs:
+  condition:
+    description: 'The condition to match against the packages in shell script. Example: `[ -f "$package_location/package.json" ] && jq -e ".scripts.test" "$package_location/package.json"`'
+    type: string
+    required: true
+    default: 'true'
+  workspace-root:
+    description: 'The root directory of the Yarn Workspace. Default: `.`'
+    type: string
+    required: false
+    default: '.'
+outputs:
+  package-paths:
+    description: "A list of matched yarn workspace paths"
+    value: ${{ steps.list-packages.outputs.package_paths_json }}
+runs:
+  using: "composite"
+  steps:
+    - name: List packages
+      id: list-packages
+      shell: bash
+      run: |
+        # List all packages which matches a certain condition in the Yarn Workspace.
+
+        cd "${{ inputs.workspace-root }}"
+
+        # Attempt to list all packages in the Yarn Workspace.
+        if yarn_workspaces_list_json=$(yarn workspaces list --json 2>&1); then
+          echo "Yarn workspaces:"
+          echo "$yarn_workspaces_list_json"
+        else
+          echo "[ERROR] Failed to list Yarn workspaces. Please ensure that the current directory is a Yarn Workspace and you have the correct version of Yarn installed."
+          echo ""
+          echo "Error returned by the command \`yarn workspaces list --json\`:"
+          echo "$yarn_workspaces_list_json"
+          echo ""
+          echo "Additional information:"
+          echo "\`pwd\`: $(pwd)"
+          echo "\`yarn --version\`: $(yarn --version 2>&1 || true)"
+
+          exit 1
+        fi
+
+        # Initialize an empty array to store matched package locations.
+        matched_package_locations=()
+
+        # Process each package location from the 'yarn workspaces list --json' output.
+        while IFS= read -r line; do
+          # Extract the package location.
+          package_location=$(echo "$line" | jq -r '.location')
+
+          # Exclude the root package.
+          if [ "$package_location" = "." ]; then
+            continue
+          fi
+
+          # Check if package matches the specified condition.
+          if ${{ inputs.condition }} > /dev/null; then
+            # Add the workspace location to the array
+            matched_package_locations+=("$package_location")
+          fi
+        done < <(echo "$yarn_workspaces_list_json")
+
+        # Convert the array of locations into a JSON array
+        package_paths_json=$(jq -cn --argjson paths "$(jq -n '$ARGS.positional' --args "${matched_package_locations[@]}")" '$paths')
+
+        # Output.
+        echo "Matched packages:"
+        echo "$package_paths_json" | jq .
+        echo "package_paths_json=$package_paths_json" >> $GITHUB_OUTPUT

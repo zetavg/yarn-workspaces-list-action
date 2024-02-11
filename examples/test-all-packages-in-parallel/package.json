@@ -1,0 +1,7 @@
+{
+  "name": "test-all-packages-in-parallel",
+  "packageManager": "yarn@4.1.0",
+  "workspaces": [
+    "packages/*"
+  ]
+}

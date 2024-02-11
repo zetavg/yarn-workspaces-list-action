@@ -1,0 +1,76 @@
+name: Test for Example "test-all-packages-in-parallel"
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+  schedule:
+    # First Sunday of every month
+    # See: https://crontab.guru/#0_0_1-7_*_*/7
+    - cron: '0 0 1-7 * */7'  # https://stackoverflow.com/a/73826599
+
+jobs:
+  # Define a job that lists all packages with a test script.
+  # This job will be needed by the test job to generate the matrix of packages to test dynamically.
+  prepare-test:
+    runs-on: ubuntu-latest
+    outputs:
+      # Expose the package path output from the list-packages step for other jobs to use it.
+      package-paths: ${{ steps.list-packages.outputs.package-paths }}
+    defaults:
+      run:
+        working-directory: ./examples/test-all-packages-in-parallel
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Yarn is required for the yarn-workspace-packages-list action to work.
+      # To do this, we'll install Node.js and enable Corepack for picking up the correct yarn version here. This may vary depending on your project.
+      # Note that running `yarn install` is not necessary.
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'examples/test-all-packages-in-parallel/.node-version'
+      - name: Enable Corepack
+        run: corepack enable
+
+      # Use the yarn-workspace-packages-list action to list all packages that have a test script.
+      - name: List packages with tests
+        uses: ./ # Should be zetavg/yarn-workspace-packages-list@v1 when used in your own project.
+        id: list-packages
+        with:
+          # A condition that checks if the package has a "test" script defined in its package.json.
+          condition: '[ -f "$package_location/package.json" ] && jq -e ".scripts.test" "$package_location/package.json"'
+          workspace-root: ./examples/test-all-packages-in-parallel # Optional, defaults to the root of the repository (".").
+
+  # Define a job that uses the matrix strategy to test all packages in parallel.
+  test:
+    needs:
+      - prepare-test # This job needs the prepare-test job to provide the package paths that need to be tested.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false # Allow all jobs to complete even if one or more fails.
+      matrix:
+        # Use the package paths from the prepare-test job to create a matrix of packages to test.
+        dir: ${{ fromJson(needs.prepare-test.outputs.package-paths) }}
+    defaults:
+      run:
+        working-directory: ./examples/test-all-packages-in-parallel
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'examples/test-all-packages-in-parallel/.node-version'
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: yarn install
+      - name: Test
+        run: |
+          cd ${{ matrix.dir }}
+          yarn test
