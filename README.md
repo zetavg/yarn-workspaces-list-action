@@ -4,7 +4,7 @@ This GitHub action lists all Yarn (v2+) Workspace packages that match a specific
 
 ## Use Cases
 
-* Running tests in parallel across all packages with a "test" script defined in their package.json using dynamic matrixes.
+* Running tests in parallel across all packages with a "test" script defined in their package.json using dynamic matrixes. ([example](https://github.com/zetavg/yarn-workspace-packages-list-action/blob/main/.github/workflows/test-example-test-all-packages-in-parallel.yml#L56-L58))
 * Run a particular command across all packages that match a specific condition with dynamic matrixes.
 
 ![](https://github.com/zetavg/yarn-workspace-packages-list-action/assets/3784687/5c812ff1-ce4e-4fc3-afe4-5d2c16b59c92)
