@@ -1,5 +1,7 @@
 # Yarn Workspace Packages Listing Action
 
+[![Test Status](https://img.shields.io/github/actions/workflow/status/zetavg/yarn-workspace-packages-list-action/test-all.yml?style=flat-square&label=test&cacheSeconds=300&link=https%3A%2F%2Fgithub.com%2Fzetavg%2Fyarn-workspace-packages-list-action%2Factions%2Fworkflows%2Ftest-all.yml)](https://github.com/zetavg/yarn-workspace-packages-list-action/actions/workflows/test-all.yml)
+
 This GitHub action lists all Yarn (v2+) Workspace packages that match a specific condition.
 
 ## Use Cases
