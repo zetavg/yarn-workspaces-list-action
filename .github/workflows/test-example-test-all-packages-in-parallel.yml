@@ -43,7 +43,7 @@ jobs:
         id: list-packages
         with:
           # A condition that checks if the package has a "test" script defined in its package.json.
-          condition: '[ -f "$package_location/package.json" ] && jq -e ".scripts.test" "$package_location/package.json"'
+          condition: '[ -f "$package_path/package.json" ] && jq -e ".scripts.test" "$package_path/package.json"'
           workspace-root: ./examples/test-all-packages-in-parallel # Optional, defaults to the root of the repository (".").
 
   # Define a job that uses the matrix strategy to test all packages in parallel.

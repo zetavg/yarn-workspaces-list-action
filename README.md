@@ -11,7 +11,7 @@ This GitHub action lists all Yarn (v2+) Workspace packages that match a specific
 
 ## Inputs
 
-- `condition`: A shell script condition to match against the packages. For example, to match all packages that have a "test" script defined in their package.json, you can use: `[ -f "$package_location/package.json" ] && jq -e ".scripts.test" "$package_location/package.json"`. Default is `true`, which will list all packages except the root package.
+- `condition`: A shell script condition to match against the packages. For example, to match all packages that have a "test" script defined in their package.json, you can use: `[ -f "$package_path/package.json" ] && jq -e ".scripts.test" "$package_path/package.json"`. Default is `true`, which will list all packages except the root package.
 - `workspace-root`: The root directory of the Yarn workspace. Default is `.`, which will be the root of the repository.
 
 ## Outputs
@@ -27,7 +27,7 @@ In your workflow file, you can use this action as follows:
   uses: zetavg/yarn-workspace-packages-list@v1
   id: list-packages
   with:
-    condition: '[ -f "$package_location/package.json" ] && jq -e ".scripts.test" "$package_location/package.json"'
+    condition: '[ -f "$package_path/package.json" ] && jq -e ".scripts.test" "$package_path/package.json"'
 ```
 
 This will list all packages that have a "test" script defined in their `package.json`, and set the paths to these packages as an output that can be used in subsequent steps or jobs.
@@ -63,7 +63,7 @@ jobs:
         id: list-packages
         with:
           # A condition that checks if the package has a "test" script defined in its package.json.
-          condition: '[ -f "$package_location/package.json" ] && jq -e ".scripts.test" "$package_location/package.json"'
+          condition: '[ -f "$package_path/package.json" ] && jq -e ".scripts.test" "$package_path/package.json"'
           workspace-root: . # Optional, defaults to the root of the repository (".").
 
   # Define a job that uses the matrix strategy to test all packages in parallel.
