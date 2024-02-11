@@ -11,6 +11,7 @@ on:
     # First Sunday of every month
     # See: https://crontab.guru/#0_0_1-7_*_*/7
     - cron: '0 0 1-7 * */7'  # https://stackoverflow.com/a/73826599
+  workflow_call:
 
 jobs:
   # Define a job that lists all packages with a test script.

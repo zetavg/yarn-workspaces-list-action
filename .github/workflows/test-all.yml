@@ -1,0 +1,17 @@
+name: Test All
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+  schedule:
+    # First Sunday of every month
+    # See: https://crontab.guru/#0_0_1-7_*_*/7
+    - cron: '0 0 1-7 * */7'  # https://stackoverflow.com/a/73826599
+
+jobs:
+  test-example-test-all-packages-in-parallel:
+    uses: ./.github/workflows/test-example-test-all-packages-in-parallel.yml
