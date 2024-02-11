@@ -26,7 +26,7 @@ In your workflow file, you can use this action as follows:
 
 ```yml
 - name: List packages with tests
-  uses: zetavg/yarn-workspace-packages-list@v1
+  uses: zetavg/yarn-workspace-packages-list-action@v1
   id: list-packages
   with:
     condition: '[ -f "$package_path/package.json" ] && jq -e ".scripts.test" "$package_path/package.json"'
@@ -61,7 +61,7 @@ jobs:
 
       # Use the yarn-workspace-packages-list action to list all packages that have a test script.
       - name: List packages with tests
-        uses: zetavg/yarn-workspace-packages-list@v1
+        uses: zetavg/yarn-workspace-packages-list-action@v1
         id: list-packages
         with:
           # A condition that checks if the package has a "test" script defined in its package.json.

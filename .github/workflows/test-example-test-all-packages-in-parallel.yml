@@ -40,7 +40,7 @@ jobs:
 
       # Use the yarn-workspace-packages-list action to list all packages that have a test script.
       - name: List packages with tests
-        uses: ./ # Should be zetavg/yarn-workspace-packages-list@v1 when used in your own project.
+        uses: ./ # Should be zetavg/yarn-workspace-packages-list-action@v1 when used in your own project.
         id: list-packages
         with:
           # A condition that checks if the package has a "test" script defined in its package.json.
