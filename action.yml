@@ -1,5 +1,8 @@
 name: 'Yarn Workspace Packages Listing'
 description: 'List all packages which matches a certain condition in a Yarn Workspace.'
+branding:
+  icon: 'package'
+  color: 'purple'
 inputs:
   condition:
     description: 'The condition to match against the packages in shell script. Example: `[ -f "$package_location/package.json" ] && jq -e ".scripts.test" "$package_location/package.json"`'
