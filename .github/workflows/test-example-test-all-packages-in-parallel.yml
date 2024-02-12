@@ -14,13 +14,13 @@ on:
   workflow_call:
 
 jobs:
-  # Define a job that lists all packages with a test script.
-  # This job will be needed by the test job to generate the matrix of packages to test dynamically.
+  # Define a job that lists all workspaces with a test script.
+  # This job will be needed by the test job to generate the matrix of workspaces to test dynamically.
   prepare-test:
     runs-on: ubuntu-latest
     outputs:
-      # Expose the package path output from the list-packages step for other jobs to use it.
-      package-paths: ${{ steps.list-packages.outputs.package-paths }}
+      # Expose the package path output from the list-workspaces step for other jobs to use it.
+      workspace-paths: ${{ steps.list-workspaces.outputs.workspace-paths }}
     defaults:
       run:
         working-directory: ./examples/test-all-packages-in-parallel
@@ -30,7 +30,7 @@ jobs:
         with:
           fetch-depth: 1
 
-      # Yarn is required for the yarn-workspace-packages-list action to work.
+      # Yarn is required for the yarn-workspaces-list-action to work.
       # To do this, we'll install Node.js and enable Corepack for picking up the correct yarn version here. This may vary depending on your project.
       # Note that running `yarn install` is not necessary.
       - name: Setup Node.js
@@ -40,25 +40,25 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
-      # Use the yarn-workspace-packages-list action to list all packages that have a test script.
-      - name: List packages with tests
-        uses: ./ # Should be zetavg/yarn-workspace-packages-list-action@v1 when used in your own project.
-        id: list-packages
+      # Use the yarn-workspaces-list-action to list all workspaces that have a test script.
+      - name: List workspaces with tests
+        uses: ./ # Should be zetavg/yarn-workspaces-list-action@v2 when used in your own project.
+        id: list-workspaces
         with:
-          # A condition that checks if the package has a "test" script defined in its package.json.
-          condition: '[ -f "$package_path/package.json" ] && jq -e ".scripts.test" "$package_path/package.json"'
+          # A condition that checks if the workspaces has a "test" script defined in its package.json.
+          condition: '[ -f "$workspace_path/package.json" ] && jq -e ".scripts.test" "$workspace_path/package.json"'
           workspace-root: ./examples/test-all-packages-in-parallel # Optional, defaults to the root of the repository (".").
 
-  # Define a job that uses the matrix strategy to test all packages in parallel.
+  # Define a job that uses the matrix strategy to test all workspaces in parallel.
   test:
     needs:
-      - prepare-test # This job needs the prepare-test job to provide the package paths that need to be tested.
+      - prepare-test # This job needs the prepare-test job to provide the workspaces paths that need to be tested.
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false # Allow all jobs to complete even if one or more fails.
       matrix:
-        # Use the package paths from the prepare-test job to create a matrix of packages to test.
-        dir: ${{ fromJson(needs.prepare-test.outputs.package-paths) }}
+        # Use the workspaces paths from the prepare-test job to create a matrix of workspaces to test.
+        dir: ${{ fromJson(needs.prepare-test.outputs.workspace-paths) }}
     defaults:
       run:
         working-directory: ./examples/test-all-packages-in-parallel
