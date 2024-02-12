@@ -2,7 +2,7 @@
 
 [![Test Status](https://img.shields.io/github/actions/workflow/status/zetavg/yarn-workspaces-list-action/test-all.yml?style=flat-square&label=test&cacheSeconds=300&link=https%3A%2F%2Fgithub.com%2Fzetavg%2Fyarn-workspaces-list-action%2Factions%2Fworkflows%2Ftest-all.yml)](https://github.com/zetavg/yarn-workspaces-list-action/actions/workflows/test-all.yml)
 
-This GitHub action lists all Yarn (v2+) Workspaces that match a specific condition.
+This GitHub action outputs a list of Yarn (v2+) Workspaces in your project that match a specific condition.
 
 ## Use Cases
 
@@ -18,7 +18,7 @@ This GitHub action lists all Yarn (v2+) Workspaces that match a specific conditi
 
 ## Outputs
 
-- `workspace-paths`: A list of matched yarn workspace paths.
+- `workspace-paths`: A list of matched yarn workspace paths, in a single-line JSON array.
 
 ## Example Usage
 

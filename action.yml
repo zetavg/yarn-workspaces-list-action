@@ -1,5 +1,5 @@
 name: 'Yarn Workspaces List'
-description: 'List all workspaces which matches a certain condition in a Yarn Workspace.'
+description: 'Outputs a list of Yarn Workspace which matches a certain condition.'
 branding:
   icon: 'package'
   color: 'purple'
