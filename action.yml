@@ -6,12 +6,10 @@ branding:
 inputs:
   condition:
     description: 'The condition to match against the workspaces in shell script. Example: `[ -f "$workspace_path/package.json" ] && jq -e ".scripts.test" "$workspace_path/package.json"`'
-    type: string
     required: true
     default: 'true'
   workspace-root:
     description: 'The root directory of the Yarn Workspace. Default: `.`'
-    type: string
     required: false
     default: '.'
 outputs:
@@ -21,6 +19,10 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Check Yarn Version
+      shell: bash
+      run: |
+        yarn --version # This also avoids subsequent yarn commands outputting "! Corepack is about to download ..." messages which can interfere with the output parsing.
     - name: List workspaces
       id: list-workspaces
       shell: bash
